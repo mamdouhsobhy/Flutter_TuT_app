@@ -18,10 +18,18 @@ dependencies:
   rflutter_alert: ^2.0.7
   google_fonts: ^6.2.1
   flutter_svg: ^2.0.10+1
+  retrofit: ^4.4.1
+  analyzer: ^6.4.1
+  dio: ^5.7.0
+  json_serializable: ^6.1.4
+  dartz: ^0.10.1
+  internet_connection_checker: ^1.0.0+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  retrofit_generator: ^8.2.1
+  build_runner: ^2.1.7
   flutter_localizations:
     sdk: flutter
 

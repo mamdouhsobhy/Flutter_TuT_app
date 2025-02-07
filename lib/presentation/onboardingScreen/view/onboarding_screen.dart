@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:tut_app/domain/models.dart';
+import 'package:tut_app/domain/model/models.dart';
 import 'package:tut_app/presentation/onboardingScreen/viewmodel/onBoardingViewModel.dart';
 import 'package:tut_app/presentation/resources/assetsManager.dart';
 import 'package:tut_app/presentation/resources/colorManager.dart';
@@ -100,8 +100,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         children: [
           InkWell(
             child: SizedBox(
-                height: AppSize.s16,
-                width: AppSize.s16,
+                height: AppSize.s20,
+                width: AppSize.s20,
                 child: SvgPicture.asset(ImageAssets.leftArrowIc)),
             onTap: () {
               _pageController.animateToPage(_viewModel.goToBackPage(),
@@ -123,8 +123,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ),
           InkWell(
             child: SizedBox(
-                height: AppSize.s16,
-                width: AppSize.s16,
+                height: AppSize.s20,
+                width: AppSize.s20,
                 child: SvgPicture.asset(ImageAssets.rightArrowIc)),
             onTap: () {
               _pageController.animateToPage(_viewModel.goToNextPage(),

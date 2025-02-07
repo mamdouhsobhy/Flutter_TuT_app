@@ -1,7 +1,7 @@
 
 import 'dart:async';
 
-import 'package:tut_app/domain/models.dart';
+import 'package:tut_app/domain/model/models.dart';
 import 'package:tut_app/presentation/base/baseViewModel.dart';
 
 import '../../resources/assetsManager.dart';
@@ -43,11 +43,6 @@ class OnBoardingViewModel implements BaseViewModel,OnBoardingViewModelInputs,OnB
   }
 
   @override
-  void goToLoginPage() {
-    // TODO: implement goToLoginPage
-  }
-
-  @override
   void onPageChanged(int index) {
     _currentIndex = index;
     _postDataToView();
@@ -82,8 +77,6 @@ abstract class OnBoardingViewModelInputs{
   int goToNextPage();
 
   int goToBackPage();
-
-  void goToLoginPage();
 
   void onPageChanged(int index);
 

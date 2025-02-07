@@ -32,7 +32,6 @@ class _SplashScreenState extends State<SplashScreen> {
     _startDelay();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
