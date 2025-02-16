@@ -2,13 +2,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tut_app/presentation/forgotPasswordScreen/forgot_password_screen.dart';
-import 'package:tut_app/presentation/loginScreen/login_screen.dart';
+import 'package:tut_app/presentation/loginScreen/view/login_screen.dart';
 import 'package:tut_app/presentation/mainScreen/main_screen.dart';
 import 'package:tut_app/presentation/onboardingScreen/view/onboarding_screen.dart';
 import 'package:tut_app/presentation/registerScreen/register_screen.dart';
 import 'package:tut_app/presentation/resources/stringManager.dart';
 import 'package:tut_app/presentation/splashScreen/splash_screen.dart';
 import 'package:tut_app/presentation/storeDetailsScreen/store_details_screen.dart';
+
+import '../../app/di.dart';
 
 class Routes {
   static const String splashRoute = "/";
@@ -26,7 +28,7 @@ class RouteGenerator {
       case Routes.splashRoute:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case Routes.loginRoute:
-      //initLoginModule();
+        initLoginModule();
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case Routes.onBoardingRoute:
         return MaterialPageRoute(builder: (_) => const OnboardingScreen());

@@ -16,10 +16,10 @@ class AppStrings {
   static const usernameError = "username_error";
   static const passwordError = "password_error";
   static const login = "login_button";
-  static const forgetPassword = "forgot_password_text";
+  static const forgetPassword = "Forgot password?";
   static const registerText = "register_text";
-  static const loading = "loading";
-  static const retryAgain = "retry_again";
+  static const loading = "loading...";
+  static const retryAgain = "Retry Again";
   static const ok = "ok";
   static const String emailHint = 'email_hint';
   static const String invalidEmail = "email_error";
