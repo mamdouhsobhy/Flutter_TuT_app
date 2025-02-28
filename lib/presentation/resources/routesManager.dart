@@ -1,11 +1,11 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tut_app/presentation/forgotPasswordScreen/forgot_password_screen.dart';
+import 'package:tut_app/presentation/forgotPasswordScreen/view/forgot_password_screen.dart';
 import 'package:tut_app/presentation/loginScreen/view/login_screen.dart';
 import 'package:tut_app/presentation/mainScreen/main_screen.dart';
 import 'package:tut_app/presentation/onboardingScreen/view/onboarding_screen.dart';
-import 'package:tut_app/presentation/registerScreen/register_screen.dart';
+import 'package:tut_app/presentation/registerScreen/view/register_screen.dart';
 import 'package:tut_app/presentation/resources/stringManager.dart';
 import 'package:tut_app/presentation/splashScreen/splash_screen.dart';
 import 'package:tut_app/presentation/storeDetailsScreen/store_details_screen.dart';
@@ -33,10 +33,11 @@ class RouteGenerator {
       case Routes.onBoardingRoute:
         return MaterialPageRoute(builder: (_) => const OnboardingScreen());
       case Routes.registerRoute:
-      //initRegisterModule();
+        initRegisterModule();
+        initRegisterModule();
         return MaterialPageRoute(builder: (_) => const RegisterScreen());
       case Routes.forgotPasswordRoute:
-      //initForgotPasswordModule();
+        initForgotPasswordModule();
         return MaterialPageRoute(builder: (_) => const ForgotPasswordScreen());
       case Routes.mainRoute:
       //initHomeModule();

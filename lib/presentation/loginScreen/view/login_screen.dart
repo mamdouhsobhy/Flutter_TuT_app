@@ -1,16 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tut_app/app/di.dart';
 import 'package:tut_app/app/shared_button.dart';
-import 'package:tut_app/domain/usecase/login_usecase.dart';
+import 'package:tut_app/presentation/common/state_renderer/state_renderer_impl.dart';
 import 'package:tut_app/presentation/resources/valuesManager.dart';
 import 'package:tut_app/presentation/resources/colorManager.dart';
 
+import '../../../app/app_prefs.dart';
 import '../../../app/shared_text_field.dart';
 import '../../resources/assetsManager.dart';
-import '../../resources/colorManager.dart';
 import '../../resources/routesManager.dart';
 import '../../resources/stringManager.dart';
 import '../viewmodel/login_viewmodel.dart';
@@ -25,6 +26,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
 
   final LoginViewModel _loginViewModel = instance<LoginViewModel>();
+  final AppPreferences _appPreferences = instance<AppPreferences>();
 
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -34,6 +36,16 @@ class _LoginScreenState extends State<LoginScreen> {
     _loginViewModel.start();
     _userNameController.addListener(() =>_loginViewModel.setUserName(_userNameController.text));
     _passwordController.addListener(() =>_loginViewModel.setPassword(_passwordController.text));
+
+    _loginViewModel.isUserLoggedInSuccessStreamController.stream.listen((isLoggedIn) {
+      if(isLoggedIn){
+        print("Route login to main");
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          _appPreferences.setUserLoggedIn();
+          Navigator.of(context).pushReplacementNamed(Routes.mainRoute);
+        });
+      }
+    });
   }
 
   @override
@@ -44,19 +56,29 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return _getContentWidget();
-  }
-
-  Widget _getContentWidget(){
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
+        value: SystemUiOverlayStyle(
         statusBarColor: ColorManager.white,
         statusBarIconBrightness: Brightness.dark,
+    ),
+    child:Scaffold(
+      backgroundColor: ColorManager.white,
+      body: SafeArea(
+        child: StreamBuilder<FlowState>(
+          stream: _loginViewModel.outputState,
+          builder: (context,snapshot) {
+            return snapshot.data?.getScreenWidget(context,_getContentWidget(context),_loginViewModel,(){
+              _loginViewModel.login();
+            })?? _getContentWidget(context);
+          },
+        ),
       ),
-      child: Scaffold(
-          backgroundColor: ColorManager.white,
-          body: SafeArea(
-            child: SingleChildScrollView(
+    )
+    );
+  }
+
+  Widget _getContentWidget(BuildContext context){
+    return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -107,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         TextButton(
                             onPressed: () {
-                              Navigator.pushReplacementNamed(context, Routes.splashRoute);
+                              Navigator.pushNamed(context, Routes.forgotPasswordRoute);
                             },
                             child: Text(
                               AppStrings.forgetPassword,
@@ -116,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             )),
                         TextButton(
                             onPressed: () {
-                              Navigator.pushReplacementNamed(context, Routes.splashRoute);
+                              Navigator.pushNamed(context, Routes.registerRoute);
                             },
                             child: Text(
                               "Not a member? Sign Up",
@@ -128,14 +150,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   )
                 ],
               ),
-            ),
-          )
-      )
     );
   }
 
   @override
   void dispose() {
+    _userNameController.dispose();
+    _passwordController.dispose();
     _loginViewModel.dispose();
     super.dispose();
   }

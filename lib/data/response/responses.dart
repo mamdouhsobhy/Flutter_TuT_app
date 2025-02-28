@@ -2,6 +2,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'responses.g.dart';
 
+//base response
 @JsonSerializable()
 class BaseResponse{
   @JsonKey(name: "status")
@@ -10,6 +11,7 @@ class BaseResponse{
   String? message;
 }
 
+//Authentication Login response
 @JsonSerializable()
 class CustomerResponse{
   @JsonKey(name: "id")
@@ -55,4 +57,18 @@ class AuthenticationResponse extends BaseResponse{
   factory AuthenticationResponse.fromJson(Map<String,dynamic> json) => _$AuthenticationResponseFromJson(json);
   //to json
   Map<String,dynamic> toJson() => _$AuthenticationResponseToJson(this);
+}
+
+//Forget Password response
+@JsonSerializable()
+class ForgotPasswordResponse extends BaseResponse{
+  @JsonKey(name: "support")
+  String? support;
+
+  ForgotPasswordResponse(this.support);
+
+  //from json
+  factory ForgotPasswordResponse.fromJson(Map<String,dynamic> json) => _$ForgotPasswordResponseFromJson(json);
+  //to json
+  Map<String,dynamic> toJson() => _$ForgotPasswordResponseToJson(this);
 }

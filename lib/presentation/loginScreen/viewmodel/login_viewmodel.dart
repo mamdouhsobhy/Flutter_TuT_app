@@ -1,16 +1,20 @@
 
+
 import 'dart:async';
 
 import 'package:tut_app/presentation/base/baseViewModel.dart';
 import 'package:tut_app/presentation/common/freezed_data_classes.dart';
+import 'package:tut_app/presentation/common/state_renderer/state_renderer.dart';
+import 'package:tut_app/presentation/common/state_renderer/state_renderer_impl.dart';
 
 import '../../../domain/usecase/login_usecase.dart';
 
-class LoginViewModel implements BaseViewModel,LoginViewModelInputs,LoginViewModelOutputs{
+class LoginViewModel extends BaseViewModel implements LoginViewModelInputs,LoginViewModelOutputs{
 
   final StreamController _userNameStreamController = StreamController<String>.broadcast();
   final StreamController _passwordStreamController = StreamController<String>.broadcast();
   final StreamController _loginButtonStreamController = StreamController<void>.broadcast();
+  final StreamController isUserLoggedInSuccessStreamController = StreamController<bool>();
 
   var loginObject = LoginObject("", "");
 
@@ -21,14 +25,16 @@ class LoginViewModel implements BaseViewModel,LoginViewModelInputs,LoginViewMode
   //inputs
   @override
   void dispose() {
+     super.dispose();
     _userNameStreamController.close();
     _passwordStreamController.close();
     _loginButtonStreamController.close();
+     isUserLoggedInSuccessStreamController.close();
   }
 
   @override
   void start() {
-    // TODO: implement start
+    inputState.add(ContentState());
   }
 
   @override
@@ -55,14 +61,22 @@ class LoginViewModel implements BaseViewModel,LoginViewModelInputs,LoginViewMode
   }
 
   @override
-  login() async{
+  Future<void> login() async {
+    isShowError = false;
+
+    inputState.add(LoadingState(stateRendererType: StateRendererType.POPUP_LOADING_STATE));
+
     (await _loginUseCase.execute(LoginUseCaseInput(loginObject.username, loginObject.password)))
-    .fold((left) => {
-
-    }, (data) => {
-
-    });
+        .fold(
+          (failure) {
+        inputState.add(ErrorState(StateRendererType.POPUP_ERROR_STATE, failure.message));
+      }, (data) {
+      isUserLoggedInSuccessStreamController.add(true);
+      inputState.add(ContentState());
+      },
+    );
   }
+
 
   //outputs
   @override
@@ -85,6 +99,9 @@ class LoginViewModel implements BaseViewModel,LoginViewModelInputs,LoginViewMode
   bool _isLoginButtonEnabled(){
     return (_isPasswordValid(loginObject.password) && _isUserNameValid(loginObject.username));
   }
+
+  @override
+  bool isShowError = false;
 
 }
 

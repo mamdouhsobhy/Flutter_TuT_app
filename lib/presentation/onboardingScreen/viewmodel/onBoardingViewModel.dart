@@ -7,7 +7,7 @@ import 'package:tut_app/presentation/base/baseViewModel.dart';
 import '../../resources/assetsManager.dart';
 import '../../resources/stringManager.dart';
 
-class OnBoardingViewModel implements BaseViewModel,OnBoardingViewModelInputs,OnBoardingViewModelOutputs{
+class OnBoardingViewModel extends BaseViewModel implements OnBoardingViewModelInputs,OnBoardingViewModelOutputs{
 
   StreamController _streamController = StreamController<SliderViewObject>();
   late final List<SliderObject> _list;
@@ -69,6 +69,9 @@ class OnBoardingViewModel implements BaseViewModel,OnBoardingViewModelInputs,OnB
     SliderObject(AppStrings.onBoardingTitle4,
         AppStrings.onBoardingSubTitle4, ImageAssets.onboardingLogo4),
   ];
+
+  @override
+  bool isShowError = false;
 
 }
 

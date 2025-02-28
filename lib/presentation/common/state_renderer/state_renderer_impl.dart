@@ -2,7 +2,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tut_app/app/Constants.dart';
+import 'package:tut_app/presentation/base/baseViewModel.dart';
 import 'package:tut_app/presentation/common/state_renderer/state_renderer.dart';
+import 'package:tut_app/presentation/loginScreen/viewmodel/login_viewmodel.dart';
 import 'package:tut_app/presentation/resources/stringManager.dart';
 
 abstract class FlowState{
@@ -75,15 +77,34 @@ class EmptyState extends FlowState{
 
 }
 
+//error state(POPUP || FULL_SCREEN)
+class SuccessState extends FlowState{
+
+  String? message ;
+
+  SuccessState(this.message);
+
+  @override
+  String getMessage() {
+    return message ?? AppStrings.success;
+  }
+
+  @override
+  StateRendererType getStateRendererType() => StateRendererType.POPUP_SUCCESS_STATE;
+
+}
+
 extension FlowStateExtension on FlowState{
-  Widget getScreenWidget(BuildContext context, Widget contentScreenWidget,
+
+  Widget getScreenWidget(BuildContext context, Widget contentScreenWidget,BaseViewModel baseViewModel,
       Function retryActionFunction) {
     switch (runtimeType) {
       case LoadingState:
         {
           if (getStateRendererType() == StateRendererType.POPUP_LOADING_STATE) {
-            showPopup(context, getStateRendererType(), getMessage());
-
+            if(!_isCurrentDialogShowing(context)) {
+              showPopup(context, getStateRendererType(), getMessage());
+            }
             return contentScreenWidget;
           } else {
             return StateRenderer(message: getMessage(),
@@ -95,8 +116,27 @@ extension FlowStateExtension on FlowState{
         {
           dismissDialog(context);
           if (getStateRendererType() == StateRendererType.POPUP_ERROR_STATE) {
-            showPopup(context, getStateRendererType(), getMessage());
-
+            if(!baseViewModel.isShowError) {
+              baseViewModel.isShowError = true;
+              showPopup(context, getStateRendererType(), getMessage());
+            }
+            print("Mamdouh: POPUP_ERROR_STATE_IMPL");
+            return contentScreenWidget;
+          } else {
+            return StateRenderer(message: getMessage(),
+                stateRendererType: getStateRendererType(),
+                retryActionFunction: retryActionFunction);
+          }
+        }
+      case SuccessState:
+        {
+          dismissDialog(context);
+          if (getStateRendererType() == StateRendererType.POPUP_SUCCESS_STATE) {
+            if(!baseViewModel.isShowError) {
+              baseViewModel.isShowError = true;
+              showPopup(context, getStateRendererType(), getMessage());
+            }
+            print("Mamdouh: POPUP_SUCCESS_STATE_IMPL");
             return contentScreenWidget;
           } else {
             return StateRenderer(message: getMessage(),
@@ -124,16 +164,19 @@ extension FlowStateExtension on FlowState{
 
   _isCurrentDialogShowing(BuildContext context) => ModalRoute.of(context)?.isCurrent != true;
 
-  dismissDialog(BuildContext context){
-    if(_isCurrentDialogShowing(context)){
-      Navigator.of(context,rootNavigator: true).pop(true);
+  void dismissDialog(BuildContext context) {
+    if (Navigator.canPop(context)) {
+      Navigator.of(context, rootNavigator: true).pop(true);
     }
   }
 
-  showPopup(BuildContext context,StateRendererType stateRendererType,String message){
-    WidgetsBinding.instance.addPostFrameCallback((_)=>
-      showDialog(context: context, builder: (BuildContext context)=>
-        StateRenderer(stateRendererType: stateRendererType,message: message,
-            retryActionFunction: (){})));
+  showPopup(BuildContext context, StateRendererType stateRendererType,
+      String message) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => showDialog(
+        context: context,
+        builder: (BuildContext context) => StateRenderer(
+            stateRendererType: stateRendererType,
+            message: message,
+            retryActionFunction: () {})));
   }
 }

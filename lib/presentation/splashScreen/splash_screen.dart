@@ -6,6 +6,9 @@ import 'package:tut_app/presentation/resources/colorManager.dart';
 import 'package:tut_app/presentation/resources/constantsManager.dart';
 import 'package:tut_app/presentation/resources/routesManager.dart';
 
+import '../../app/app_prefs.dart';
+import '../../app/di.dart';
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -15,6 +18,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   Timer? _timer;
+  final AppPreferences _appPreferences = instance<AppPreferences>();
 
   _startDelay(){
     _timer = Timer(const Duration(seconds: AppConstants.splashDelay), () {
@@ -22,8 +26,24 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
-  _goNext(){
-    Navigator.pushReplacementNamed(context, Routes.onBoardingRoute);
+  Future<void> _goNext() async {
+    bool isUserLoggedIn = await _appPreferences.isUserLoggedIn();
+    print("Routs $isUserLoggedIn");
+
+    if (isUserLoggedIn) {
+      // navigate to main screen
+      Navigator.pushReplacementNamed(context, Routes.mainRoute);
+    } else {
+      bool isOnBoardingScreenViewed = await _appPreferences.isOnBoardingScreenViewed();
+
+      if (isOnBoardingScreenViewed) {
+        // navigate to login screen
+        Navigator.pushReplacementNamed(context, Routes.loginRoute);
+      } else {
+        // navigate to onboarding screen
+        Navigator.pushReplacementNamed(context, Routes.onBoardingRoute);
+      }
+    }
   }
 
   @override

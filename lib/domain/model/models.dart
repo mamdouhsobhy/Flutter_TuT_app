@@ -16,7 +16,7 @@ class SliderViewObject {
   SliderViewObject(this.sliderObject, this.numOfSliders, this.currentIndex);
 }
 
-//login models
+//login and register models
 
 class Customer {
   String id;
